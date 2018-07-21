@@ -1,0 +1,6 @@
+DELETE FROM BOOK;
+INSERT INTO BOOK VALUES (2, 'Spring in action');
+INSERT INTO BOOK VALUES (3, 'Hibernate in action');
+
+DELETE FROM AUTHOR;
+INSERT INTO AUTHOR VALUES (3, 'Christian Bauer');

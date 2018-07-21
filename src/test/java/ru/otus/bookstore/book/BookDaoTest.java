@@ -7,39 +7,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.dao.DataRetrievalFailureException;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.bookstore.author.Author;
-import ru.otus.bookstore.book.author.BookAuthor;
-import ru.otus.bookstore.book.author.BookAuthorDao;
-import ru.otus.bookstore.book.genre.BookGenre;
-import ru.otus.bookstore.book.genre.BookGenreDao;
 import ru.otus.bookstore.dao.book.JdbcBookDao;
-import ru.otus.bookstore.dao.book.author.JdbcBookAuthorDao;
-import ru.otus.bookstore.dao.book.genre.JdbcBookGenreDao;
 
 import java.util.Collection;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class BookDaoTest {
     private final BookDao bookDao;
-    private final BookGenreDao genreDao;
-    private final BookAuthorDao authorDao;
 
     @Autowired
-    public BookDaoTest(BookDao bookDao, BookGenreDao genreDao, BookAuthorDao authorDao) {
+    public BookDaoTest(BookDao bookDao) {
         this.bookDao = bookDao;
-        this.genreDao = genreDao;
-        this.authorDao = authorDao;
     }
 
     @Test
+    @Sql("/stored-books.sql")
     public void insert() {
         Book book = Book.create("Effective java");
         assertThat(book.getId()).isNull();
@@ -48,37 +36,33 @@ public class BookDaoTest {
     }
 
     @Test
+    @Sql("/stored-books.sql")
     public void findById() {
         Book book = bookDao.findById(2);
         assertThat(book).isNotNull();
-        assertThat(book.getName()).isEqualToIgnoringCase("spring in action");
-        assertThat(book.getAuthors().size()).isEqualTo(1);
-        assertThat(book.getGenres().size()).isEqualTo(1);
+        assertThat(book.getName()).isEqualToIgnoringCase("Spring in action");
     }
 
     @Test
+    @Sql("/stored-books.sql")
     public void update() {
         Book book = bookDao.findById(3);
         book.setName("Hibernate in action ver. 2");
         bookDao.update(book);
-        Book updatedBook = bookDao.findById(3);
+        Book updatedBook = bookDao.findById(book.getId());
         assertThat(updatedBook.getName()).isEqualToIgnoringCase("Hibernate in action ver. 2");
     }
 
     @Test
+    @Sql("/stored-books.sql")
     public void delete() {
-        Book book = bookDao.findById(4);
+        Book book = bookDao.findById(3);
         bookDao.delete(book);
-        assertThrows(DataRetrievalFailureException.class, () -> bookDao.findById(4));
-
-        Set<BookGenre> genres = genreDao.getGenresByBookId(4);
-        assertThat(genres.size()).isEqualTo(0);
-
-        Set<BookAuthor> authors = authorDao.getAuthorsByBookId(4);
-        assertThat(authors.size()).isEqualTo(0);
+        assertThat(bookDao.findById(3)).isNull();
     }
 
     @Test
+    @Sql("/stored-books.sql")
     public void addAuthor() {
         Book book = bookDao.findById(3);
         assertThat(book.getAuthors().size()).isEqualTo(0);
@@ -90,26 +74,25 @@ public class BookDaoTest {
     }
 
     @Test
+    @Sql("/stored-books.sql")
     public void findAll() {
         Collection<Book> books = bookDao.findAll();
-        assertThat(books.size()).isEqualTo(3);
+        assertThat(books.size()).isEqualTo(2);
+    }
+
+    @Test
+    @Sql("/stored-books.sql")
+    public void findByName() {
+        Book book = bookDao.findByName("Spring in action");
+        assertThat(book.getName()).isEqualTo("Spring in action");
     }
 
     @Configuration
     public class AppConfig {
-        @Bean
-        public BookGenreDao bookGenreDao(NamedParameterJdbcOperations jdbcOperations) {
-            return new JdbcBookGenreDao(jdbcOperations);
-        }
 
         @Bean
-        public BookAuthorDao bookAuthorDao(NamedParameterJdbcOperations jdbcOperations) {
-            return new JdbcBookAuthorDao(jdbcOperations);
-        }
-
-        @Bean
-        public BookDao bookDao(NamedParameterJdbcOperations jdbcOperations, BookAuthorDao bookAuthorDao, BookGenreDao bookGenreDao) {
-            return new JdbcBookDao(jdbcOperations, bookAuthorDao, bookGenreDao);
+        public BookDao bookDao() {
+            return new JdbcBookDao();
         }
     }
 

@@ -2,10 +2,17 @@ package ru.otus.bookstore.core;
 
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractNamedEntityDao<T extends NamedEntity> implements NamedEntityDao<T> {
+    @PersistenceContext
+    private EntityManager em;
+
     private final NamedParameterJdbcOperations jdbcOperations;
     private final Class<T> clazz;
 
@@ -15,21 +22,21 @@ public abstract class AbstractNamedEntityDao<T extends NamedEntity> implements N
     }
 
     @Override
+    @Transactional
     public T findByName(String name) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", name);
-        return jdbcOperations.queryForObject(String.format("SELECT ID, NAME FROM %s WHERE NAME = :name", clazz.getSimpleName()), params, clazz);
+        TypedQuery<T> query = em.createQuery(String.format("SELECT e FROM %s e WHERE NAME = :name", clazz.getSimpleName()), clazz);
+        query.setParameter("name", name);
+        return query.getSingleResult();
     }
 
     @Override
+    @Transactional
     public void create(T entity) {
         if (entity.getId() != null) {
             throw new IllegalArgumentException("ID is not null");
         }
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", entity.getName());
-        long id = jdbcOperations.update(String.format("INSERT INTO %s (NAME) VALUES(:name)", clazz.getSimpleName()), params);
-        entity.setId(id);
+        em.persist(entity);
     }
 }

@@ -4,6 +4,9 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.otus.bookstore.book.BookService;
+import ru.otus.bookstore.book.comment.Comment;
+
+import java.util.Collection;
 
 @ShellComponent
 public class BookCommands {
@@ -21,5 +24,16 @@ public class BookCommands {
     @ShellMethod("List all books.")
     public String list() {
         return bookService.findAll().toString();
+    }
+
+    @ShellMethod("Add comment to book")
+    public String addComment(String book, String comment) {
+        bookService.addComment(book, comment);
+        return "Comment added";
+    }
+
+    @ShellMethod("List all book comments.")
+    public Collection<Comment> comments(@ShellOption String book) {
+        return bookService.getAllCommentsByBook(book);
     }
 }

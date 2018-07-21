@@ -34,15 +34,25 @@ public class BookServiceTest {
             book.setId(100);
             return null;
         }).when(bookDao).insert(book);
-        Author author = Author.of(1, "Joshua Block");
-        given(authorService.findByName("Joshua Block")).willReturn(author);
+        Author author = Author.of(1, "Joshua Bloch");
+        given(authorService.findByName("Joshua Bloch")).willReturn(author);
         Genre genre = Genre.of(1, "Programming");
         given(genreService.findByName("Programming")).willReturn(genre);
         doNothing().when(bookDao).update(book);
-        Book createdBook = bookService.create("Effective Java", "Joshua Block", "Programming");
+        Book createdBook = bookService.create("Effective Java", "Joshua Bloch", "Programming");
 
         assertThat(createdBook).isEqualTo(book);
         assertThat(createdBook.getGenres()).extracting("genre.name").contains("Programming");
-        assertThat(createdBook.getAuthors()).extracting("author.name").contains("Joshua Block");
+        assertThat(createdBook.getAuthors()).extracting("author.name").contains("Joshua Bloch");
+    }
+
+    @Test
+    public void testAddBookComment() {
+        Book book = Book.create("Effective Java");
+        given(bookDao.findByName("Effective Java")).willReturn(book);
+        BookService bookService = new BookServiceImpl(bookDao, authorService, genreService);
+
+        bookService.addComment("Effective Java", "Nice book");
+        assertThat(book.getComments()).extracting("text").contains("Nice book");
     }
 }

@@ -1,7 +1,17 @@
 package ru.otus.bookstore.book;
 
-import ru.otus.bookstore.core.GenericDao;
+import java.util.Collection;
 
-public interface BookDao extends GenericDao<Book> {
+public interface BookDao {
+    Book findById(long id);
 
+    Collection<Book> findAll();
+
+    void insert(Book entity);
+
+    void update(Book entity);
+
+    void delete(Book entity);
+
+    Book findByName(String name);
 }

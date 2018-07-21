@@ -9,12 +9,8 @@ import ru.otus.bookstore.author.AuthorServiceImpl;
 import ru.otus.bookstore.book.BookDao;
 import ru.otus.bookstore.book.BookService;
 import ru.otus.bookstore.book.BookServiceImpl;
-import ru.otus.bookstore.book.author.BookAuthorDao;
-import ru.otus.bookstore.book.genre.BookGenreDao;
 import ru.otus.bookstore.dao.author.JdbcAuthorDao;
 import ru.otus.bookstore.dao.book.JdbcBookDao;
-import ru.otus.bookstore.dao.book.author.JdbcBookAuthorDao;
-import ru.otus.bookstore.dao.book.genre.JdbcBookGenreDao;
 import ru.otus.bookstore.dao.genre.JdbcGenreDao;
 import ru.otus.bookstore.genre.GenreDao;
 import ru.otus.bookstore.genre.GenreService;
@@ -49,17 +45,7 @@ public class AppConfiguration {
     }
 
     @Bean
-    public BookGenreDao bookGenreDao(NamedParameterJdbcOperations jdbcOperations) {
-        return new JdbcBookGenreDao(jdbcOperations);
-    }
-
-    @Bean
-    public BookAuthorDao bookAuthorDao(NamedParameterJdbcOperations jdbcOperations) {
-        return new JdbcBookAuthorDao(jdbcOperations);
-    }
-
-    @Bean
-    public BookDao bookDao(NamedParameterJdbcOperations jdbcOperations, BookAuthorDao bookAuthorDao, BookGenreDao bookGenreDao) {
-        return new JdbcBookDao(jdbcOperations, bookAuthorDao, bookGenreDao);
+    public BookDao bookDao() {
+        return new JdbcBookDao();
     }
 }

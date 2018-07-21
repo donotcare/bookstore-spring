@@ -2,11 +2,21 @@ package ru.otus.bookstore.author;
 
 import ru.otus.bookstore.core.NamedEntity;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.Objects;
 
+@Entity
 public class Author implements NamedEntity {
+    @Id
+    @GeneratedValue
     private Long id;
     private String name;
+
+    private Author() {
+
+    }
 
     private Author(Long id, String name) {
         this.id = id;

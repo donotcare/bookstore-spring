@@ -2,6 +2,7 @@ package ru.otus.bookstore.book;
 
 import ru.otus.bookstore.author.Author;
 import ru.otus.bookstore.author.AuthorService;
+import ru.otus.bookstore.book.comment.Comment;
 import ru.otus.bookstore.genre.Genre;
 import ru.otus.bookstore.genre.GenreService;
 
@@ -31,8 +32,23 @@ public class BookServiceImpl implements BookService {
         return newBook;
     }
 
+
+
     @Override
     public Collection<Book> findAll() {
         return bookDao.findAll();
+    }
+
+    @Override
+    public void addComment(String bookName, String comment) {
+        Book book = bookDao.findByName(bookName);
+        book.addComment(comment);
+        bookDao.update(book);
+    }
+
+    @Override
+    public Collection<Comment> getAllCommentsByBook(String bookName) {
+        Book book = bookDao.findByName(bookName);
+        return book.getComments();
     }
 }
