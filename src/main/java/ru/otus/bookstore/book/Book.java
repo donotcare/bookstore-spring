@@ -1,9 +1,7 @@
 package ru.otus.bookstore.book;
 
 import ru.otus.bookstore.author.Author;
-import ru.otus.bookstore.book.author.BookAuthor;
 import ru.otus.bookstore.book.comment.Comment;
-import ru.otus.bookstore.book.genre.BookGenre;
 import ru.otus.bookstore.genre.Genre;
 
 import javax.persistence.*;
@@ -15,17 +13,17 @@ public class Book {
     @GeneratedValue
     private Long id;
     private String name;
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<BookAuthor> authors;
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<BookGenre> genres;
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Author> authors;
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Genre> genres;
     @ElementCollection(fetch = FetchType.EAGER)
     private Collection<Comment> comments;
 
     private Book() {
     }
 
-    private Book(Long id, String name, Set<BookAuthor> authors, Set<BookGenre> genres, Collection<Comment> comments) {
+    private Book(Long id, String name, Set<Author> authors, Set<Genre> genres, Collection<Comment> comments) {
         this.id = id;
         this.name = name;
         this.authors = authors;
@@ -53,14 +51,14 @@ public class Book {
         if (author.getId() == null) {
             throw new IllegalArgumentException("Author id is null");
         }
-        authors.add(BookAuthor.create(author));
+        authors.add(author);
     }
 
     public void addGenre(Genre genre) {
         if (genre.getId() == null) {
             throw new IllegalArgumentException("Genre id is null");
         }
-        genres.add(BookGenre.create(genre));
+        genres.add(genre);
     }
 
     public void addComment(String comment) {
@@ -84,11 +82,11 @@ public class Book {
         return Objects.hash(id);
     }
 
-    public Set<BookAuthor> getAuthors() {
+    public Set<Author> getAuthors() {
         return Collections.unmodifiableSet(authors);
     }
 
-    public Set<BookGenre> getGenres() {
+    public Set<Genre> getGenres() {
         return Collections.unmodifiableSet(genres);
     }
 

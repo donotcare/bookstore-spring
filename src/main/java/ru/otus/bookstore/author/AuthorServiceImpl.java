@@ -1,25 +1,23 @@
 package ru.otus.bookstore.author;
 
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class AuthorServiceImpl implements AuthorService {
-    private final AuthorDao dao;
+    private final AuthorRepository dao;
 
-    public AuthorServiceImpl(AuthorDao dao) {
+    public AuthorServiceImpl(AuthorRepository dao) {
         this.dao = dao;
     }
 
     public Author create(String name) {
         Author author = Author.create(name);
-        dao.create(author);
+        dao.save(author);
         return author;
     }
 
-    public Author findByName(String name){
-        try{
-            return dao.findByName(name);
-        } catch (IncorrectResultSizeDataAccessException e) {
-            return create(name);
-        }
+    @Transactional(readOnly = true)
+    public Author findByName(String name) {
+        return dao.findFirstByName(name).orElse(create(name));
     }
 }

@@ -1,6 +1,6 @@
 package ru.otus.bookstore.author;
 
-import ru.otus.bookstore.core.NamedEntity;
+
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,14 +8,13 @@ import javax.persistence.Id;
 import java.util.Objects;
 
 @Entity
-public class Author implements NamedEntity {
+public class Author  {
     @Id
     @GeneratedValue
     private Long id;
     private String name;
 
     private Author() {
-
     }
 
     private Author(Long id, String name) {
@@ -23,17 +22,10 @@ public class Author implements NamedEntity {
         this.name = name;
     }
 
-    @Override
     public Long getId() {
         return id;
     }
 
-    @Override
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    @Override
     public String getName() {
         return name;
     }
