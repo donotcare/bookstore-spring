@@ -1,20 +1,18 @@
 package ru.otus.bookstore.genre;
 
-import ru.otus.bookstore.core.NamedEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Genre implements NamedEntity {
+public class Genre {
     @Id
     @GeneratedValue
     private Long id;
     private String name;
 
     private Genre(){
-
     }
 
     private Genre(Long id, String name) {
@@ -26,12 +24,6 @@ public class Genre implements NamedEntity {
         return id;
     }
 
-    @Override
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    @Override
     public String getName() {
         return name;
     }

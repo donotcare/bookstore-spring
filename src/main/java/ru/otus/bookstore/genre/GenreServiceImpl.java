@@ -1,27 +1,25 @@
 package ru.otus.bookstore.genre;
 
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class GenreServiceImpl implements GenreService {
-    private final GenreDao dao;
+    private final GenreRepository dao;
 
-    public GenreServiceImpl(GenreDao dao) {
+    public GenreServiceImpl(GenreRepository dao) {
         this.dao = dao;
     }
 
     @Override
     public Genre create(String name) {
         Genre genre = Genre.create(name);
-        dao.create(genre);
+        dao.save(genre);
         return genre;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Genre findByName(String name) {
-        try {
-            return dao.findByName(name);
-        } catch (IncorrectResultSizeDataAccessException e) {
-            return create(name);
-        }
+        return dao.findFirstByName(name).orElse(create(name));
     }
 }
