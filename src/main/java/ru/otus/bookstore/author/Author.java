@@ -1,28 +1,26 @@
 package ru.otus.bookstore.author;
 
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import java.util.Objects;
 
-@Entity
-public class Author  {
+@Document
+public class Author {
     @Id
-    @GeneratedValue
-    private Long id;
+    private String id;
     private String name;
 
     private Author() {
     }
 
-    private Author(Long id, String name) {
+    private Author(String id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
@@ -34,7 +32,7 @@ public class Author  {
         return new Author(null, name);
     }
 
-    public static Author of(long id, String name) {
+    public static Author of(String id, String name) {
         return new Author(id, name);
     }
 
