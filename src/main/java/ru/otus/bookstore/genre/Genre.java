@@ -1,26 +1,24 @@
 package ru.otus.bookstore.genre;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
+@Document
 public class Genre {
     @Id
-    @GeneratedValue
-    private Long id;
+    private String id;
     private String name;
 
-    private Genre(){
+    private Genre() {
     }
 
-    private Genre(Long id, String name) {
+    private Genre(String id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
@@ -35,7 +33,7 @@ public class Genre {
                 '}';
     }
 
-    public static Genre of(long id, String name) {
+    public static Genre of(String id, String name) {
         return new Genre(id, name);
     }
 

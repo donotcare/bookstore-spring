@@ -1,29 +1,26 @@
 package ru.otus.bookstore.book;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import ru.otus.bookstore.author.Author;
 import ru.otus.bookstore.book.comment.Comment;
 import ru.otus.bookstore.genre.Genre;
 
-import javax.persistence.*;
 import java.util.*;
 
-@Entity
+@Document
 public class Book {
     @Id
-    @GeneratedValue
-    private Long id;
+    private String id;
     private String name;
-    @OneToMany(fetch = FetchType.EAGER)
     private Set<Author> authors;
-    @OneToMany(fetch = FetchType.EAGER)
     private Set<Genre> genres;
-    @ElementCollection(fetch = FetchType.EAGER)
     private Collection<Comment> comments;
 
     private Book() {
     }
 
-    private Book(Long id, String name, Set<Author> authors, Set<Genre> genres, Collection<Comment> comments) {
+    private Book(String id, String name, Set<Author> authors, Set<Genre> genres, Collection<Comment> comments) {
         this.id = id;
         this.name = name;
         this.authors = authors;
@@ -31,11 +28,11 @@ public class Book {
         this.comments = comments;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 

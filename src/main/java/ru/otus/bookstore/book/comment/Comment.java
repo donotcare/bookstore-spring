@@ -1,8 +1,5 @@
 package ru.otus.bookstore.book.comment;
 
-import javax.persistence.Embeddable;
-
-@Embeddable
 public class Comment {
     private String text;
 

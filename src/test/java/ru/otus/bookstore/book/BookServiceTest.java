@@ -29,13 +29,13 @@ public class BookServiceTest {
         BookService bookService = new BookServiceImpl(bookDao, authorService, genreService);
         Book book = Book.create("Effective Java");
         doAnswer(i -> {
-            ((Book) i.getArgument(0)).setId(100);
-            book.setId(100);
+            ((Book) i.getArgument(0)).setId("100");
+            book.setId("100");
             return null;
         }).when(bookDao).save(book);
-        Author author = Author.of(1, "Joshua Bloch");
+        Author author = Author.of("1", "Joshua Bloch");
         given(authorService.findByName("Joshua Bloch")).willReturn(author);
-        Genre genre = Genre.of(1, "Programming");
+        Genre genre = Genre.of("1", "Programming");
         given(genreService.findByName("Programming")).willReturn(genre);
         Book createdBook = bookService.create("Effective Java", "Joshua Bloch", "Programming");
 
